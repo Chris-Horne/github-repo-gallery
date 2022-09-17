@@ -1,7 +1,7 @@
 const overview = document.querySelector(".overview");
 const username = "chris-horne";
 const repoList = document.querySelector(".repo-list");
-const allReposContainer = document.querySelector(".repo");
+const allReposContainer = document.querySelector(".repos");
 const repoData = document.querySelector(".repo-data");
 
 
@@ -11,7 +11,7 @@ const gitUserInfo = async function () {
     const data = await userInfo.json();
     //console.log(data);
     displayUserInfo(data);
-}
+};
 
 gitUserInfo();
 
@@ -31,14 +31,14 @@ const displayUserInfo = function (data) {
     `;
     overview.append(div);
     gitRepos();
-}
+};
 
 const gitRepos = async function () {
     const fetchRepos = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=30`);
     const repoData = await fetchRepos.json();
     //console.log(repoData);
     displayRepos(repoData);
-}
+};
 
 const displayRepos = function (repos) {
     for (const repo of repos) {
@@ -69,17 +69,21 @@ const getRepoInfo = async function (repoName) {
         languages.push(language);
     }
     //console.log(languages);
-}
+
+    displayRepoInfo(repoInfo, languages);
+};
 
 const displayRepoInfo = function (repoInfo, languages) {
     repoData.innerHTML = "";
+    repoData.classList.remove("hide");
+    allReposContainer.classList.add("hide");
     const div = document.createElement("div");
-    div.innerHTML = `<h3>Name: ${repoInfo.name}</h3>
-    <p>Description: ${repoInfo.description}</p>
-    <p>Default Branch: ${repoInfo.branches_url}</p>
-    <p>Languages: ${languages.join(", ")}</p>
-    <a class="visit" href="${repoInfo.htm_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>
+    div.innerHTML = `
+      <h3>Name: ${repoInfo.name}</h3>
+      <p>Description: ${repoInfo.description}</p>
+      <p>Default Branch: ${repoInfo.default_branch}</p>
+      <p>Languages: ${languages.join(", ")}</p>
+      <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>
     `;
     repoData.append(div);
-
 };
