@@ -1,5 +1,6 @@
 const overview = document.querySelector(".overview");
 const username = "chris-horne";
+const repoList = document.querySelector(".repo-list");
 
 const gitUserInfo = async function () {
     const userInfo = await fetch(`https://api.github.com/users/${username}`);
@@ -8,7 +9,9 @@ const gitUserInfo = async function () {
     displayUserInfo(data);
 }
 
-const displayUserInfo = function(data) {
+gitUserInfo();
+
+const displayUserInfo = function (data) {
     const div = document.createElement("div");
     div.classList.add("user-info");
     div.innerHTML = `
@@ -23,4 +26,21 @@ const displayUserInfo = function(data) {
     </div>
     `;
     overview.append(div);
+    gitRepos();
 }
+
+const gitRepos = async function () {
+    const fetchRepos = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=30`);
+    const repoData = await fetchRepos.json();
+    //console.log(repoData);
+    displayRepos(repoData);
+}
+
+const displayRepos = function (repos) {
+    for (const repo of repos) {
+        const repoItem = document.createElement("li");
+        repoItem.classList.add("repo");
+        repoItem.innerHTML = `<h3>${repo.name}</h3>`;
+        repoList.append(repoItem);
+    }
+};
